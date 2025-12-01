@@ -1,6 +1,36 @@
-# Sistema Bancário Completo
+# Sistema Bancário - Processo Seletivo
 
 Sistema bancário completo com API REST em Node.js e frontend em Next.js para simular operações bancárias básicas.
+
+## 🚀 Como Iniciar o Projeto
+
+### Pré-requisitos
+
+- **Docker** e **Docker Compose** instalados
+- Portas `3000`, `3001` e `5433` disponíveis
+
+### Passo a Passo
+
+1. **Clone o repositório** (se aplicável)
+
+2. **Na raiz do projeto, execute:**
+
+```bash
+docker-compose up --build
+```
+
+3. **Aguarde a inicialização** (pode levar alguns minutos na primeira vez)
+
+4. **Acesse o sistema:**
+
+- **Frontend:** http://localhost:3001
+- **Backend API:** http://localhost:3000
+- **PostgreSQL:** localhost:5433
+
+### Credenciais de Acesso
+
+- **Usuário:** `admin`
+- **Senha:** `admin`
 
 ## 📁 Estrutura do Projeto
 
@@ -11,306 +41,94 @@ Sistema bancário completo com API REST em Node.js e frontend em Next.js para si
 └── docker-compose.yml # Orquestração Docker
 ```
 
-Cada diretório possui seu próprio README com instruções detalhadas.
+## 🎯 Funcionalidades Implementadas
 
-## 🚀 Tecnologias
+### API Backend
 
-### Backend
-- **Node.js** com **Express**
-- **TypeScript**
-- **PostgreSQL** (via Docker)
-- **TypeORM** para ORM
-- **JWT** para autenticação
-- **CORS** para comunicação com frontend
+- ✅ Autenticação JWT
+- ✅ Consulta de saldo
+- ✅ Depósito (cria conta se não existir)
+- ✅ Saque (com validação de saldo)
+- ✅ Transferência entre contas
+- ✅ Reset do sistema
+- ✅ Histórico de transações
 
 ### Frontend
-- **Next.js 14** (App Router)
-- **React 18**
-- **TypeScript**
-- **Tailwind CSS**
-- **Axios** para requisições HTTP
 
-## 📋 Pré-requisitos
+- ✅ Tela de login
+- ✅ Dashboard com todas as operações
+- ✅ Consulta de saldo
+- ✅ Depósito, saque e transferência
+- ✅ Histórico de transações
+- ✅ Mensagens de erro/sucesso
+- ✅ Logout
 
-- Node.js (v18 ou superior)
-- Docker e Docker Compose
-- npm ou yarn
+## 🔧 Tecnologias Utilizadas
 
-## 🚀 Início Rápido com Docker
+### Backend
+- Node.js + Express
+- TypeScript
+- PostgreSQL + TypeORM
+- JWT para autenticação
 
-A forma mais fácil de executar o projeto é usando Docker Compose na raiz do projeto:
+### Frontend
+- Next.js 14 (App Router)
+- React 18
+- TypeScript
+- Tailwind CSS
 
+## 📚 Documentação Adicional
+
+- **Backend:** Veja [backend/README.md](./backend/README.md) para detalhes da API
+- **Frontend:** Veja [frontend/README.md](./frontend/README.md) para detalhes da interface
+
+## 🛠️ Comandos Úteis
+
+### Parar os containers:
 ```bash
-docker-compose up --build
+docker-compose down
 ```
 
-Isso irá subir:
-- **PostgreSQL** na porta `5433`
-- **Backend API** na porta `3000`
-- **Frontend** na porta `3001`
-
-Acesse o frontend em: http://localhost:3001
-
-**Credenciais padrão:**
-- Usuário: `admin`
-- Senha: `admin`
-
-## 🔧 Instalação Manual
-
-Para instalação manual de cada parte, consulte os READMEs específicos:
-
-- **Backend:** Veja [backend/README.md](./backend/README.md)
-- **Frontend:** Veja [frontend/README.md](./frontend/README.md)
-
-## 📚 Estrutura do Projeto
-
-```
-.
-├── backend/                 # API REST
-│   ├── src/
-│   │   ├── config/         # Configurações (banco de dados)
-│   │   ├── controllers/    # Controladores (lógica de requisições)
-│   │   ├── middleware/     # Middlewares (autenticação, tratamento de erros)
-│   │   ├── models/         # Modelos de dados (TypeORM entities)
-│   │   ├── routes/         # Definição de rotas
-│   │   ├── services/       # Lógica de negócio
-│   │   ├── types/          # Tipos TypeScript
-│   │   └── utils/          # Utilitários (JWT, etc.)
-│   ├── Dockerfile
-│   └── package.json
-├── frontend/                # Interface Web
-│   ├── app/                # Páginas e componentes
-│   │   ├── login/         # Tela de login
-│   │   ├── dashboard/     # Dashboard principal
-│   │   └── globals.css    # Estilos globais
-│   ├── lib/                # Utilitários e API client
-│   ├── Dockerfile
-│   └── package.json
-└── docker-compose.yml       # Orquestração Docker
-```
-
-## 🔐 Endpoints
-
-### 1. Autenticação
-
-#### POST /login
-Autentica o usuário e retorna um token JWT.
-
-**Body:**
-```json
-{
-  "username": "admin",
-  "pass": "admin"
-}
-```
-
-**Resposta (200 OK):**
-```json
-{
-  "token": "<jwt_token>"
-}
-```
-
-**Resposta (403 Forbidden):** Credenciais inválidas
-
-### 2. Consultar Saldo
-
-#### GET /balance?account_id=100
-Consulta o saldo de uma conta.
-
-**Headers:**
-```
-Authorization: Bearer <jwt_token>
-```
-
-**Resposta (200 OK):**
-```json
-{
-  "balance": 20
-}
-```
-
-**Resposta (404 Not Found):** Conta inexistente
-**Resposta (401 Unauthorized):** Token inválido ou ausente
-
-### 3. Operações (Depósito, Saque, Transferência)
-
-#### POST /event
-Realiza operações bancárias (depósito, saque ou transferência).
-
-**Headers:**
-```
-Authorization: Bearer <jwt_token>
-```
-
-**Depósito:**
-```json
-{
-  "type": "deposit",
-  "destination": "100",
-  "amount": 10
-}
-```
-
-**Resposta (201 Created):**
-```json
-{
-  "destination": {
-    "id": "100",
-    "balance": 10
-  }
-}
-```
-
-**Saque:**
-```json
-{
-  "type": "withdraw",
-  "origin": "100",
-  "amount": 5
-}
-```
-
-**Resposta (201 Created):**
-```json
-{
-  "origin": {
-    "id": "100",
-    "balance": 15
-  }
-}
-```
-
-**Transferência:**
-```json
-{
-  "type": "transfer",
-  "origin": "100",
-  "destination": "300",
-  "amount": 15
-}
-```
-
-**Resposta (201 Created):**
-```json
-{
-  "origin": {
-    "id": "100",
-    "balance": 0
-  },
-  "destination": {
-    "id": "300",
-    "balance": 15
-  }
-}
-```
-
-**Respostas de Erro:**
-- **400 Bad Request:** Saldo insuficiente
-- **404 Not Found:** Conta inexistente
-- **401 Unauthorized:** Token inválido ou ausente
-
-### 4. Resetar Estado
-
-#### POST /reset
-Reseta todo o estado do sistema (apaga todas as contas e transações).
-
-**Headers:**
-```
-Authorization: Bearer <jwt_token>
-```
-
-**Resposta (200 OK):**
-```
-OK
-```
-
-### 5. Histórico de Transações
-
-#### GET /transactions?account_id=100
-Retorna o histórico de transações de uma conta.
-
-**Headers:**
-```
-Authorization: Bearer <jwt_token>
-```
-
-**Resposta (200 OK):**
-```json
-{
-  "transactions": [
-    {
-      "id": 1,
-      "type": "deposit",
-      "amount": 10,
-      "originAccountId": null,
-      "destinationAccountId": "100",
-      "createdAt": "2024-01-01T00:00:00.000Z"
-    }
-  ]
-}
-```
-
-**Resposta (404 Not Found):** Conta inexistente
-
-## 🧪 Testando a API
-
-Você pode testar a API usando ferramentas como:
-- **Postman**
-- **Insomnia**
-- **curl**
-- **Thunder Client** (VS Code)
-
-### Exemplo com curl:
-
-1. **Login:**
+### Ver logs:
 ```bash
-curl -X POST http://localhost:3000/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","pass":"admin"}'
+docker-compose logs -f
 ```
 
-2. **Consultar Saldo:**
+### Reconstruir tudo:
 ```bash
-curl -X GET "http://localhost:3000/balance?account_id=100" \
-  -H "Authorization: Bearer <seu_token>"
+docker-compose up --build --force-recreate
 ```
 
-3. **Depósito:**
-```bash
-curl -X POST http://localhost:3000/event \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <seu_token>" \
-  -d '{"type":"deposit","destination":"100","amount":10}'
-```
+## 🧪 Testando o Sistema
 
-## 📝 Notas
+1. Acesse http://localhost:3001
+2. Faça login com `admin` / `admin`
+3. No dashboard:
+   - Crie uma conta fazendo um depósito (ex: conta `100` com valor `10`)
+   - Consulte o saldo
+   - Faça saques e transferências
+   - Veja o histórico de transações
 
-- O banco de dados é criado automaticamente na primeira execução (synchronize: true em desenvolvimento)
-- As credenciais padrão são: `admin` / `admin`
-- O JWT expira em 24 horas por padrão
-- Todas as operações são registradas na tabela de transações
+## 📝 Notas Importantes
 
-## 🎨 Interface do Usuário
+- O banco de dados é criado automaticamente na primeira execução
+- Todas as operações são persistidas no PostgreSQL
+- O token JWT expira em 24 horas
+- Use o botão "Resetar Sistema" para limpar todos os dados
 
-O frontend oferece uma interface completa com:
+## ✅ Requisitos Atendidos
 
-- **Tela de Login**: Autenticação segura com JWT
-- **Dashboard**: 
-  - Consulta de saldo por ID de conta
-  - Realização de depósitos
-  - Realização de saques
-  - Transferências entre contas
-  - Histórico de transações
-  - Botão para resetar o sistema
-- **Logout**: Encerramento seguro de sessão
-- **Mensagens de Erro**: Feedback visual para operações inválidas
+Todos os requisitos do desafio foram implementados:
+- ✅ Autenticação (login, 401, 403)
+- ✅ Reset do sistema
+- ✅ Consulta de saldo (404, 200)
+- ✅ Depósito (cria conta, deposita em existente)
+- ✅ Saque (404, 201, 400 saldo insuficiente)
+- ✅ Transferência (201, 404, 400 saldo insuficiente)
+- ✅ Frontend completo (opcional)
+- ✅ Organização e separação de responsabilidades
+- ✅ Tratamento adequado de erros
 
-## 🔒 Segurança
+---
 
-- Autenticação via JWT
-- Validação de saldo antes de saques e transferências
-- Tratamento adequado de erros
-- Validação de dados de entrada
-- CORS configurado para comunicação frontend/backend
-
+**Desenvolvido para processo seletivo**
