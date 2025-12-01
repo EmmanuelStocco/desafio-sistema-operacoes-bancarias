@@ -6,26 +6,73 @@ Sistema bancário completo com API REST em Node.js e frontend em Next.js para si
 
 ### Pré-requisitos
 
-- **Docker** e **Docker Compose** instalados
+- **Docker** e **Docker Compose** (para rodar via Docker)
+- **Node.js** v18+ e **npm** (para rodar localmente)
 - Portas `3000`, `3001` e `5433` disponíveis
 
-### Passo a Passo
+### Opção 1: Docker (Recomendado - Mais Fácil)
 
-1. **Clone o repositório** (se aplicável)
+1. **Clone o repositório**
 
-2. **Na raiz do projeto, execute:**
+2. **Configure as variáveis de ambiente:**
+
+```bash
+cp .env.example .env
+```
+
+Edite o arquivo `.env` se necessário (geralmente não precisa alterar nada).
+
+3. **Execute o Docker Compose:**
 
 ```bash
 docker-compose up --build
 ```
 
-3. **Aguarde a inicialização** (pode levar alguns minutos na primeira vez)
-
 4. **Acesse o sistema:**
 
 - **Frontend:** http://localhost:3001
 - **Backend API:** http://localhost:3000
-- **PostgreSQL:** localhost:5433
+
+### Opção 2: Local (Desenvolvimento)
+
+1. **Clone o repositório**
+
+2. **Configure as variáveis de ambiente:**
+
+```bash
+cp .env.example .env
+```
+
+Edite o arquivo `.env` e ajuste:
+- `DB_HOST=localhost` (ao invés de `postgres`)
+- `NODE_ENV=development`
+
+3. **Inicie o banco de dados:**
+
+```bash
+docker-compose up -d postgres
+```
+
+4. **Backend:**
+
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+5. **Frontend (em outro terminal):**
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+6. **Acesse:**
+
+- **Frontend:** http://localhost:3000
+- **Backend API:** http://localhost:3000
 
 ### Credenciais de Acesso
 
@@ -38,7 +85,8 @@ docker-compose up --build
 .
 ├── backend/          # API REST (Node.js + Express + TypeScript)
 ├── frontend/         # Interface Web (Next.js + React + Tailwind)
-└── docker-compose.yml # Orquestração Docker
+├── docker-compose.yml # Orquestração Docker
+└── .env.example      # Exemplo de variáveis de ambiente
 ```
 
 ## 🎯 Funcionalidades Implementadas
@@ -77,31 +125,46 @@ docker-compose up --build
 - TypeScript
 - Tailwind CSS
 
-## 📚 Documentação Adicional
-
-- **Backend:** Veja [backend/README.md](./backend/README.md) para detalhes da API
-- **Frontend:** Veja [frontend/README.md](./frontend/README.md) para detalhes da interface
-
 ## 🛠️ Comandos Úteis
 
-### Parar os containers:
+### Docker
+
+**Parar os containers:**
 ```bash
 docker-compose down
 ```
 
-### Ver logs:
+**Ver logs:**
 ```bash
 docker-compose logs -f
 ```
 
-### Reconstruir tudo:
+**Reconstruir tudo:**
 ```bash
 docker-compose up --build --force-recreate
 ```
 
+### Local
+
+**Backend:**
+```bash
+cd backend
+npm run dev    # Desenvolvimento
+npm run build  # Build
+npm start      # Produção
+```
+
+**Frontend:**
+```bash
+cd frontend
+npm run dev    # Desenvolvimento
+npm run build  # Build
+npm start      # Produção
+```
+
 ## 🧪 Testando o Sistema
 
-1. Acesse http://localhost:3001
+1. Acesse o frontend (http://localhost:3001 ou http://localhost:3000 se rodando local)
 2. Faça login com `admin` / `admin`
 3. No dashboard:
    - Crie uma conta fazendo um depósito (ex: conta `100` com valor `10`)
@@ -115,6 +178,7 @@ docker-compose up --build --force-recreate
 - Todas as operações são persistidas no PostgreSQL
 - O token JWT expira em 24 horas
 - Use o botão "Resetar Sistema" para limpar todos os dados
+- O arquivo `.env` não deve ser commitado (já está no .gitignore)
 
 ## ✅ Requisitos Atendidos
 
