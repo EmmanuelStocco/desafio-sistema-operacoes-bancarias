@@ -16,6 +16,7 @@ interface Transaction {
 export default function DashboardPage() {
   const router = useRouter()
   const [accountId, setAccountId] = useState('')
+  const [consultedAccountId, setConsultedAccountId] = useState('') // ID da conta que foi realmente consultada
   const [balance, setBalance] = useState<number | null>(null)
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(false)
@@ -48,6 +49,7 @@ export default function DashboardPage() {
     try {
       const response = await accountAPI.getBalance(accountId)
       setBalance(response.balance)
+      setConsultedAccountId(accountId) // Salva o ID que foi realmente consultado
       await loadTransactions()
     } catch (err: any) {
       if (err.response?.status === 404) {
@@ -56,15 +58,16 @@ export default function DashboardPage() {
         setError('Erro ao carregar saldo')
       }
       setBalance(null)
+      setConsultedAccountId('') // Limpa se der erro
     } finally {
       setLoading(false)
     }
   }
 
   const loadTransactions = async () => {
-    if (!accountId) return
+    if (!consultedAccountId) return
     try {
-      const response = await accountAPI.getTransactions(accountId)
+      const response = await accountAPI.getTransactions(consultedAccountId)
       setTransactions(response.transactions)
     } catch (err) {
       console.error('Erro ao carregar transações:', err)
@@ -85,7 +88,7 @@ export default function DashboardPage() {
       setSuccess('Depósito realizado com sucesso!')
       setDepositAmount('')
       setDepositAccount('')
-      if (depositAccount === accountId) {
+      if (depositAccount === consultedAccountId) {
         await loadBalance()
       }
     } catch (err: any) {
@@ -109,7 +112,7 @@ export default function DashboardPage() {
       setSuccess('Saque realizado com sucesso!')
       setWithdrawAmount('')
       setWithdrawAccount('')
-      if (withdrawAccount === accountId) {
+      if (withdrawAccount === consultedAccountId) {
         await loadBalance()
       }
     } catch (err: any) {
@@ -141,7 +144,7 @@ export default function DashboardPage() {
       setTransferAmount('')
       setTransferOrigin('')
       setTransferDestination('')
-      if (transferOrigin === accountId || transferDestination === accountId) {
+      if (transferOrigin === consultedAccountId || transferDestination === consultedAccountId) {
         await loadBalance()
       }
     } catch (err: any) {
@@ -170,6 +173,7 @@ export default function DashboardPage() {
       setBalance(null)
       setTransactions([])
       setAccountId('')
+      setConsultedAccountId('')
     } catch (err: any) {
       console.error('Erro ao resetar:', err)
       setError(err.response?.data?.error || 'Erro ao resetar sistema')
@@ -230,7 +234,7 @@ export default function DashboardPage() {
             </div>
             {balance !== null && (
               <div className="mt-4 p-4 bg-indigo-50 rounded-lg">
-                <p className="text-sm text-gray-600">Saldo da Conta {accountId}</p>
+                <p className="text-sm text-gray-600">Saldo da Conta {consultedAccountId}</p>
                 <p className="text-3xl font-bold text-indigo-700">R$ {balance.toFixed(2)}</p>
               </div>
             )}
@@ -377,7 +381,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Histórico de Transações */}
-        {accountId && (
+        {consultedAccountId && (
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-semibold mb-4 text-gray-800">Histórico de Transações</h2>
             {transactions.length === 0 ? (
